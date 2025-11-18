@@ -279,9 +279,11 @@ with tab2:
         except Exception:
             st.warning("Data evaluasi FMTS tidak tersedia.")
 
-    st.markdown("### Insight")
+    st.markdown("### Insight :")
     st.markdown("""
-    * Untuk 12 bulan ke depan, model memproyeksikan tren... (sesuaikan berdasar model Anda).
+    1. Akurasi Superior: Dengan nilai MAPE hanya 1.65%, model FMTS menunjukkan tingkat akurasi yang luar biasa tinggi (tertinggi di antara kedua model). Ini berarti rata-rata kesalahan perkiraan harga emas relatif sangat kecil.
+    2. Pola Prediksi Step-Like: Peramalan jangka panjang (tahun 2025 akhir hingga 2026) memproyeksikan tren kenaikan yang signifikan. Pola pergerakannya khas, yaitu berbentuk seperti tangga (step-like) alih-alih kurva mulus. Pola ini adalah hasil alami dari proses diskretisasi dan kuantisasi yang digunakan dalam metode Fuzzy Time Series.
+    3. Implikasi Investasi: Kenaikan yang diproyeksikan (di atas Rp 1.8 Juta) menunjukkan prospek harga emas yang sangat positif dalam jangka waktu prediksi.
     """)
 
 # --- TAB 3: MARIMA ---
@@ -311,6 +313,14 @@ with tab3:
             st.metric("MAPE", f"{m['MAPE (%)']:.2f}%")
         except Exception:
             st.warning("Data evaluasi MARIMA tidak tersedia.")
+
+    st.markdown("### Insight :")
+    st.markdown("""
+    1. Akurasi Tinggi dan Responsif: Model MARIMA memiliki nilai MAPE 2.30%, yang tergolong akurat. Karena VECM (Vector Error Correction Model) adalah model multivariat, ia mampu menangkap hubungan jangka panjang (kointegrasi) antara harga emas dan faktor eksternal (seperti Kurs USD atau Suku Bunga), yang membuat prediksinya lebih kontekstual.
+    2. Pola Prediksi Mulus: Prediksi jangka panjang (tahun 2025 akhir hingga 2026) menunjukkan kenaikan harga emas yang sangat kuat dan berkelanjutan dengan kurva yang mulus (tidak terputus). Pola ini lebih mewakili pergerakan harga komoditas di pasar keuangan yang cenderung bergerak secara kontinu.
+    3. Implikasi Investasi: Proyeksi kenaikan harga emas oleh MARIMA bahkan mencapai level tertinggi dalam periode yang diramal (di atas Rp 2 Juta di tahun 2026), menguatkan pandangan tren bullish yang kuat.
+    """)
+
 
 # --- TAB 4: LIVE PREDICTION ---
 with tab4:
@@ -361,3 +371,4 @@ with tab4:
 # FOOTER
 # ==============================
 st.markdown("<hr><div class='small' style='text-align:center'>© 2025 Dashboard Peramalan Harga Emas</div>", unsafe_allow_html=True)
+
