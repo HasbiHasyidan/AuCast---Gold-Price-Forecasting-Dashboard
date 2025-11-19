@@ -1,22 +1,10 @@
-# =========================================================
-# 🥇 DASHBOARD PERAMALAN HARGA EMAS
-# Versi final: spacing rapi + sumbu Y tampil + insight + live prediction interaktif
-# =========================================================
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 
-# ==============================
-# CONFIG
-# ==============================
-st.set_page_config(page_title="Dashboard Emas — FTS & MARIMA", page_icon="🥇", layout="wide")
-
-# ==============================
-# STYLE (tema gelap modern)
-# ==============================
+st.set_page_config(page_title="Dashboard Emas — FTS & MARIMA", page_icon="🪙", layout="wide")
 st.markdown("""
 <style>
 :root{
@@ -56,9 +44,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================
-# HELPER FUNCTIONS
-# ==============================
 def format_idr(v):
     try:
         return f"Rp {int(round(v)):,}".replace(",", ".")
@@ -71,11 +56,8 @@ def trend_arrow(current, previous):
         if current < previous: return "📉 Turun"
     except:
         pass
-    return "➡️ Stabil"
-
-# ==============================
-# LOAD & CLEAN DATA
-# ==============================
+    return "Stabil"
+# Load Data and Preprocessing
 @st.cache_data
 def load_and_prep(file_hist, file_fts, file_vecm, file_corr, file_eval):
     """Load dan bersihkan semua data."""
@@ -124,7 +106,7 @@ def load_and_prep(file_hist, file_fts, file_vecm, file_corr, file_eval):
 
         return df_hist, df_fts, df_vecm, df_corr, df_eval, combined
     except Exception as e:
-        st.error(f"❌ Gagal memuat data: {e}")
+        st.error(f" Gagal memuat data: {e}")
         st.stop()
 
 # --- path file (sesuaikan jika letak file berbeda) ---
@@ -138,17 +120,11 @@ df_hist, df_fts_full, df_vecm_full, df_corr, df_eval, combined = load_and_prep(
     PATH_HIST, PATH_FTS_FULL, PATH_VECM_FULL, PATH_CORR, PATH_EVAL
 )
 
-# ==============================
-# HEADER
-# ==============================
-st.markdown('<div class="hero"><h2 style="color:var(--gold)">📊 Dashboard Peramalan Harga Emas</h2><div class="small">Visualisasi perbandingan model Fuzzy Time Series (FMTS) dan MARIMA (VECM).</div></div>', unsafe_allow_html=True)
-
-# spacer kecil
+# Header
+st.markdown('<div class="hero"><h2 style="color:var(--gold)"> Dashboard Peramalan Harga Emas</h2><div class="small">Visualisasi perbandingan model Fuzzy Time Series (FMTS) dan MARIMA (VECM).</div></div>', unsafe_allow_html=True)
 st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
-# ==============================
-# KPI CARDS
-# ==============================
+# Card
 if df_hist.empty:
     st.warning("Dataset historis kosong. Pastikan Data Forecast Emas.csv berisi data.")
     st.stop()
@@ -185,12 +161,8 @@ col1.markdown(f"<div class='kpi'><div class='title'>Harga Terakhir ({harga_terak
 col2.markdown(f"<div class='kpi'><div class='title'>Prediksi FMTS ({waktu_pred_fmts_1.strftime('%b %Y')})</div><div class='value'>{format_idr(pred_fmts_1)}</div><div class='small'>{trend_arrow(pred_fmts_1, harga_terakhir)}</div></div>", unsafe_allow_html=True)
 col3.markdown(f"<div class='kpi'><div class='title'>Prediksi MARIMA ({waktu_pred_marima_1.strftime('%b %Y')})</div><div class='value'>{format_idr(pred_marima_1)}</div><div class='small'>{trend_arrow(pred_marima_1, harga_terakhir)}</div></div>", unsafe_allow_html=True)
 
-# ==============================
-# TABS
-# ==============================
-tab1, tab2, tab3, tab4 = st.tabs(["📈 Beranda", "🔹 FMTS Detail", "🔸 MARIMA Detail", "🧭 Live Prediction"])
-
-# Utility: compute reasonable y-axis range covering actual & forecasts
+# Tabs
+tab1, tab2, tab3, tab4 = st.tabs(["Beranda", "FMTS Detail", "MARIMA Detail", "Live Prediction"])
 def yaxis_range_for(*dfs, col_names=('Harga Emas', 'Forecast_FTS', 'Forecast_VECM')):
     vals = []
     for df in dfs:
@@ -213,7 +185,7 @@ def yaxis_range_for(*dfs, col_names=('Harga Emas', 'Forecast_FTS', 'Forecast_VEC
         mx += padding
     return dict(range=[mn, mx], showgrid=True, zeroline=True, showline=True)
 
-# --- TAB 1: BERANDA ---
+# Tab 1
 with tab1:
     st.markdown("### A. Grafik Gabungan: Historis & Prediksi")
     fig = go.Figure()
@@ -251,7 +223,7 @@ with tab1:
     * Faktor paling berpengaruh terhadap harga emas biasanya adalah **Kurs USD** dan **Suku Bunga** (lihat file korelasi).
     """)
 
-# --- TAB 2: FMTS ---
+# Tab 2
 with tab2:
     st.markdown("### B. Detail FMTS (Fuzzy Time Series)")
     fig_f = go.Figure()
@@ -286,7 +258,7 @@ with tab2:
     3. Implikasi Investasi: Kenaikan yang diproyeksikan (di atas Rp 1.8 Juta) menunjukkan prospek harga emas yang sangat positif dalam jangka waktu prediksi.
     """)
 
-# --- TAB 3: MARIMA ---
+# Tab 3
 with tab3:
     st.markdown("### C. Detail MARIMA (VECM)")
     fig_m = go.Figure()
@@ -322,7 +294,7 @@ with tab3:
     """)
 
 
-# --- TAB 4: LIVE PREDICTION ---
+# Tab 4
 with tab4:
     st.markdown("### D. Live Prediction Interaktif")
     model_choice = st.radio("Pilih Model", ["FMTS", "MARIMA"], horizontal=True)
@@ -367,8 +339,7 @@ with tab4:
         fig_live.update_layout(template="plotly_dark", height=380, paper_bgcolor="rgba(0,0,0,0)", yaxis=yax_live)
         st.plotly_chart(fig_live, use_container_width=True)
 
-# ==============================
-# FOOTER
-# ==============================
+
 st.markdown("<hr><div class='small' style='text-align:center'>© 2025 Dashboard Peramalan Harga Emas</div>", unsafe_allow_html=True)
+
 
